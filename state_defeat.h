@@ -1,0 +1,10 @@
+#ifndef _STATE_DEFEAT_H_
+#define _STATE_DEFEAT_H_
+
+void STATE_DEFEAT_INIT();
+
+void STATE_DEFEAT_LOOP();
+
+void STATE_DEFEAT_UNINIT();
+
+#endif

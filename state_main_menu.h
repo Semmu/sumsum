@@ -1,0 +1,10 @@
+#ifndef _STATE_MAIN_MENU_H_
+#define _STATE_MAIN_MENU_H_
+
+void STATE_MAIN_MENU_INIT();
+
+void STATE_MAIN_MENU_LOOP();
+
+void STATE_MAIN_MENU_UNINIT();
+
+#endif

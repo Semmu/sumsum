@@ -1,0 +1,10 @@
+#ifndef _STATE_VICTORY_H_
+#define _STATE_VICTORY_H_
+
+void STATE_VICTORY_INIT();
+
+void STATE_VICTORY_LOOP();
+
+void STATE_VICTORY_UNINIT();
+
+#endif

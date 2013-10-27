@@ -1,0 +1,10 @@
+#ifndef _STATE_PLAYING_H_
+#define _STATE_PLAYING_H_
+
+void STATE_PLAYING_INIT();
+
+void STATE_PLAYING_UNINIT();
+
+void STATE_PLAYING_LOOP();
+
+#endif
