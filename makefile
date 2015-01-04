@@ -1,6 +1,6 @@
 CC=gcc
-FLAGS=`sdl-config --cflags` -Wall -O3
-LIBS=`sdl-config --libs` -lSDL_image -lSDL_ttf
+FLAGS=`sdl-config --cflags` -Wall -Og
+LIBS=`sdl-config --libs` -lSDL_image -lSDL_ttf -lm
 
 all: ./main.x
 	@echo -n " - running"

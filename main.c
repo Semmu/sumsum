@@ -12,6 +12,8 @@
 #include "state_defeat.h"
 #include "state_view_highscores.h"
 
+void empty_funtcion() {}
+
 int main()
 {
 	/*
@@ -68,9 +70,9 @@ int main()
 	STATE_DEFEAT->UNINIT = &STATE_DEFEAT_UNINIT;
 
 	STATE_QUITTING = (PROGRAM_STATE*)malloc(sizeof(PROGRAM_STATE));
-	STATE_QUITTING->INIT = NULL;
-	STATE_QUITTING->LOOP = NULL;
-	STATE_QUITTING->UNINIT = NULL;
+	STATE_QUITTING->INIT = &empty_funtcion;
+	STATE_QUITTING->LOOP = &empty_funtcion;
+	STATE_QUITTING->UNINIT = &empty_funtcion;
 
 
 	Application.State = STATE_MAIN_MENU;
