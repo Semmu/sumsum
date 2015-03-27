@@ -4,7 +4,7 @@ Super Unusual Medieval Strategic Ultimate Mission - a minimalist RTS written in 
 
 
 ## About
-This is a really minimalistic RTS which was my homework in the first semester (in 2012). The objective is to win the match, controlling one (and then multiple) towns.
+This is a really minimalistic RTS which was my homework at the university in 2012. The objective is to win the match, controlling one (and then multiple) towns.
 
 Every town has 3 attributes: number of resources, number of peasants, and number of soldiers. Peasants produce resources constantly (the more peasants, the more resources per second), peasants are created using resources, and soldiers are created using peasants and resources.
 
