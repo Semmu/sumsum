@@ -10,7 +10,7 @@ Every town has 3 attributes: number of resources, number of peasants, and number
 
 In the main screen you can type in your name, select color and configure the other variables of a match. See the screenshots for details.
 
-The code itself was written more than 2 years ago, so it could use some refactoring love. But instead of refactoring this one, my plan is to create a version 2 of the game with more features, original artwork, network multiplayer, 3D graphics (maybe), etc. But these are just ideas and I'll only do it if I have some spare time, so you better don't wait for it :)
+The code itself was written more than 2 years ago, so it could use some refactoring love. But instead of refactoring this one, my plan is to create a version 2 of the game with more features, original artwork, network multiplayer, 3D graphics (maybe), etc. But these are just ideas and I'll only achieve it if I have magically recieve some freetime, so... there are no release dates... :)
 
 ## Screenshots
 Here: https://www.dropbox.com/sh/abskmldbszi487r/AAA0yFpkeWjUoN1s2icdlV0Za?dl=0
