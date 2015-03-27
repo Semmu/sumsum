@@ -1,5 +1,7 @@
 # S.U.M.S.U.M.
 Super Unusual Medieval Strategic Ultimate Mission - a minimalist RTS written in C using the SDL library.
+(the name is "funky" on purpose)
+
 
 ## About
 This is a really minimalistic RTS which was my homework in the first semester (in 2012). The objective is to win the match, controlling one (and then multiple) towns.
