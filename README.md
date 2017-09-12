@@ -15,6 +15,10 @@ The code itself was written more than 2 years ago, so it could use some refactor
 ## Screenshots
 Here: https://www.dropbox.com/sh/abskmldbszi487r/AAA0yFpkeWjUoN1s2icdlV0Za?dl=0
 
+## Install
+sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev libsdl-ttf2.0-dev
+make
+
 ## License
 You can do whatever you want with the code, but the images are likely protected by law. (to be honest I used images from random places on the internet). So monetizing them are really prohibited.
 
