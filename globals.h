@@ -9,7 +9,15 @@ typedef enum
 	PLAYER_NAME_LENGTH = 21, // maximális hossz
 	VIEWPORT_MOVE_VALUE = 20, // térkép ugrásának mértéke renderelésenként
 	TOWN_TILE_SIZE = 128, // falut jelképező kép mérete
+	UNIT_CENTER_X = 20, // egységek jelképező kép közepének x coordinátája
+	UNIT_CENTER_Y = 30, // egységek jelképező kép közepének y coordinátája
 	IMAGINARY_GRID_SIZE = 32, // négyzetrács mérete, erre vannak rárakva a faluk
+	TOWN_OFFSET_RESOURCE_X = -23, // falu bal felső sarkától merre legyen az erőforrás szám megjelenítve
+	TOWN_OFFSET_RESOURCE_Y = 48,
+	TOWN_OFFSET_PEASANT_X = 25, // falu bal felső sarkától merre legyen a paraszt létszám megjelenítve
+	TOWN_OFFSET_PEASANT_Y = 33,
+	TOWN_OFFSET_WARRIOR_X = -39, // falu bal felső sarkától merre legyen az katona létszám megjelenítve
+	TOWN_OFFSET_WARRIOR_Y = -44,
 
 	PEASANT_PRODUCTION_PER_MIN = 30, // parasztok termelése
 	PEASANT_COST = 10, // paraszt készítés ára

@@ -495,19 +495,22 @@ void STATE_PLAYING_LOOP()
 
 
 		char chars[10];
+		SDL_Rect town_on_screen;
 		sprintf(chars, "%d", t_it->peasants);
-		rect.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - Match.Viewport.Y + 33;
-		rect.x = t_it->Position.X * IMAGINARY_GRID_SIZE - Match.Viewport.X + 25;
+		town_on_screen.x = t_it->Position.X * IMAGINARY_GRID_SIZE - Match.Viewport.X;
+		town_on_screen.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - Match.Viewport.Y;
+		rect.x = town_on_screen.x + TOWN_OFFSET_PEASANT_X;
+		rect.y = town_on_screen.y + TOWN_OFFSET_PEASANT_Y;
 		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
 
 		sprintf(chars, "%.0lf", t_it->resources);
-		rect.y += 15;
-		rect.x -= 48;
+		rect.x = town_on_screen.x + TOWN_OFFSET_RESOURCE_X;
+		rect.y = town_on_screen.y + TOWN_OFFSET_RESOURCE_Y;
 		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
 
 		sprintf(chars, "%d", t_it->warriors);
-		rect.y -= 92;
-		rect.x -= 16;
+		rect.x = town_on_screen.x + TOWN_OFFSET_WARRIOR_X;
+		rect.y = town_on_screen.y + TOWN_OFFSET_WARRIOR_Y;
 		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
 
 
@@ -522,8 +525,8 @@ void STATE_PLAYING_LOOP()
 		double y = sin(angle) * movement;
 
 		SDL_Rect r;
-		r.x = (x + u_it->FROM->Position.X) * IMAGINARY_GRID_SIZE - Match.Viewport.X - 20;
-		r.y = (y + u_it->FROM->Position.Y) * IMAGINARY_GRID_SIZE - Match.Viewport.Y - 30;
+		r.x = (x + u_it->FROM->Position.X) * IMAGINARY_GRID_SIZE - Match.Viewport.X - UNIT_CENTER_X;
+		r.y = (y + u_it->FROM->Position.Y) * IMAGINARY_GRID_SIZE - Match.Viewport.Y - UNIT_CENTER_Y;
 		SDL_BlitSurface(Image.Unit[u_it->Color], NULL, Application.Output, &r);
 	}
 
