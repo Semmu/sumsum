@@ -492,28 +492,6 @@ void STATE_PLAYING_LOOP()
 			rect.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - TOWN_TILE_SIZE / 2 - Match.Viewport.Y;
 			SDL_BlitSurface(Image.SELECTED_ENEMY_TOWN_BORDER, NULL, Application.Output, &rect);
 		}
-
-
-		char chars[10];
-		SDL_Rect town_on_screen;
-		sprintf(chars, "%d", t_it->peasants);
-		town_on_screen.x = t_it->Position.X * IMAGINARY_GRID_SIZE - Match.Viewport.X;
-		town_on_screen.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - Match.Viewport.Y;
-		rect.x = town_on_screen.x + TOWN_OFFSET_PEASANT_X;
-		rect.y = town_on_screen.y + TOWN_OFFSET_PEASANT_Y;
-		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
-
-		sprintf(chars, "%.0lf", t_it->resources);
-		rect.x = town_on_screen.x + TOWN_OFFSET_RESOURCE_X;
-		rect.y = town_on_screen.y + TOWN_OFFSET_RESOURCE_Y;
-		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
-
-		sprintf(chars, "%d", t_it->warriors);
-		rect.x = town_on_screen.x + TOWN_OFFSET_WARRIOR_X;
-		rect.y = town_on_screen.y + TOWN_OFFSET_WARRIOR_Y;
-		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
-
-
 	}
 
 	// egységek megjelenítése
@@ -533,6 +511,29 @@ void STATE_PLAYING_LOOP()
 
 
 
+	// faluk feliratainak megjelenítése
+	t_it = Match.TOWNS;
+	for (t_it = Match.TOWNS->NEXT; t_it != NULL; t_it = t_it->NEXT)
+	{
+		char chars[10];
+		SDL_Rect town_on_screen;
+		sprintf(chars, "%d", t_it->peasants);
+		town_on_screen.x = t_it->Position.X * IMAGINARY_GRID_SIZE - Match.Viewport.X;
+		town_on_screen.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - Match.Viewport.Y;
+		rect.x = town_on_screen.x + TOWN_OFFSET_PEASANT_X;
+		rect.y = town_on_screen.y + TOWN_OFFSET_PEASANT_Y;
+		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
+
+		sprintf(chars, "%.0lf", t_it->resources);
+		rect.x = town_on_screen.x + TOWN_OFFSET_RESOURCE_X;
+		rect.y = town_on_screen.y + TOWN_OFFSET_RESOURCE_Y;
+		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
+
+		sprintf(chars, "%d", t_it->warriors);
+		rect.x = town_on_screen.x + TOWN_OFFSET_WARRIOR_X;
+		rect.y = town_on_screen.y + TOWN_OFFSET_WARRIOR_Y;
+		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
+	}
 
 
 
