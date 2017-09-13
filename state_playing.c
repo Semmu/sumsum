@@ -299,6 +299,10 @@ void STATE_PLAYING_LOOP()
 			}
 			break;
 
+		case SDL_VIDEORESIZE:
+			Application.Output = SDL_SetVideoMode(Application.e.resize.w, Application.e.resize.h, 0, SDL_ANYFORMAT | SDL_RESIZABLE);
+			break;
+
 			default: break;
 		}
 	}

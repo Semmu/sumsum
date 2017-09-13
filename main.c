@@ -36,7 +36,12 @@ int main()
 
 	Application.LPS_CAP = 50;
 	//Application.Output = SDL_SetVideoMode(0, 0, 0, SDL_ANYFORMAT | SDL_FULLSCREEN);
-	Application.Output = SDL_SetVideoMode(1300, 700, 0, SDL_ANYFORMAT);
+	// Resizing window during highscore, defeated, victory game states still has problems, so this is done in resize branch.
+	// Problems: resizing is lost, application still thinks window size have not changed, output image is cropped.
+	// Issue: this is hard to fix, as previous image is not stored, it should be stored and everything should be redrawn,
+	//        first the orig image, then darkening it and ... see in init in these states.
+	// TODO: do the fix described in issue.
+	Application.Output = SDL_SetVideoMode(1300, 700, 0, SDL_ANYFORMAT | SDL_RESIZABLE);
 	SDL_WM_SetCaption("S.U.M.S.U.M.",  "S.U.M.S.U.M.");
 	SDL_ShowCursor(SDL_DISABLE);
 	Application.FONT = TTF_OpenFont("res/font", 0);
