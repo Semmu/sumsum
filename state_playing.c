@@ -391,6 +391,12 @@ void STATE_PLAYING_LOOP()
 				}
 			}
 
+			u_tmp = u_it->NEXT;
+			u_it->PREV->NEXT = u_it->NEXT;
+			u_it->NEXT->PREV = u_it->PREV;
+			free(u_it);
+			u_it = u_tmp;
+
 			/*
 			**	CHECK VICTORY/DEFEAT
 			*/
@@ -401,11 +407,6 @@ void STATE_PLAYING_LOOP()
 			if (CheckPlayerDefeat())
 				PROGRAM_SWITCH_STATE(STATE_DEFEAT);
 
-			u_tmp = u_it->NEXT;
-			u_it->PREV->NEXT = u_it->NEXT;
-			u_it->NEXT->PREV = u_it->PREV;
-			free(u_it);
-			u_it = u_tmp;
 		}
 		else
 		{
