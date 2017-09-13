@@ -7,4 +7,6 @@ void STATE_PLAYING_UNINIT();
 
 void STATE_PLAYING_LOOP();
 
+void STATE_PLAYING_RESIZE();
+
 #endif

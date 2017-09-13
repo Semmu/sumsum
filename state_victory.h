@@ -5,6 +5,8 @@ void STATE_VICTORY_INIT();
 
 void STATE_VICTORY_LOOP();
 
+void STATE_VICTORY_RESIZE();
+
 void STATE_VICTORY_UNINIT();
 
 #endif

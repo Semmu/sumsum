@@ -5,6 +5,8 @@ void STATE_MAIN_MENU_INIT();
 
 void STATE_MAIN_MENU_LOOP();
 
+void STATE_MAIN_MENU_RESIZE();
+
 void STATE_MAIN_MENU_UNINIT();
 
 #endif

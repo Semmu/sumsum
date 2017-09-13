@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 #include <math.h>
 #include <time.h>
 #include <SDL/SDL.h>
@@ -36,11 +37,6 @@ int main()
 
 	Application.LPS_CAP = 50;
 	//Application.Output = SDL_SetVideoMode(0, 0, 0, SDL_ANYFORMAT | SDL_FULLSCREEN);
-	// Resizing window during highscore, defeated, victory game states still has problems, so this is done in resize branch.
-	// Problems: resizing is lost, application still thinks window size have not changed, output image is cropped.
-	// Issue: this is hard to fix, as previous image is not stored, it should be stored and everything should be redrawn,
-	//        first the orig image, then darkening it and ... see in init in these states.
-	// TODO: do the fix described in issue.
 	Application.Output = SDL_SetVideoMode(1300, 700, 0, SDL_ANYFORMAT | SDL_RESIZABLE);
 	SDL_WM_SetCaption("S.U.M.S.U.M.",  "S.U.M.S.U.M.");
 	SDL_ShowCursor(SDL_DISABLE);
@@ -52,31 +48,37 @@ int main()
 	STATE_MAIN_MENU = (PROGRAM_STATE*)malloc(sizeof(PROGRAM_STATE));
 	STATE_MAIN_MENU->INIT = &STATE_MAIN_MENU_INIT;
 	STATE_MAIN_MENU->LOOP = &STATE_MAIN_MENU_LOOP;
+	STATE_MAIN_MENU->RESIZE = &STATE_MAIN_MENU_RESIZE;
 	STATE_MAIN_MENU->UNINIT = &STATE_MAIN_MENU_UNINIT;
 
 	STATE_VIEW_HIGHSCORES = (PROGRAM_STATE*)malloc(sizeof(PROGRAM_STATE));
 	STATE_VIEW_HIGHSCORES->INIT = &STATE_VIEW_HIGHSCORES_INIT;
 	STATE_VIEW_HIGHSCORES->LOOP = &STATE_VIEW_HIGHSCORES_LOOP;
+	STATE_VIEW_HIGHSCORES->RESIZE = &STATE_VIEW_HIGHSCORES_RESIZE;
 	STATE_VIEW_HIGHSCORES->UNINIT = &STATE_VIEW_HIGHSCORES_UNINIT;
 
 	STATE_PLAYING = (PROGRAM_STATE*)malloc(sizeof(PROGRAM_STATE));
 	STATE_PLAYING->INIT = &STATE_PLAYING_INIT;
 	STATE_PLAYING->LOOP = &STATE_PLAYING_LOOP;
+	STATE_PLAYING->RESIZE = &STATE_PLAYING_RESIZE;
 	STATE_PLAYING->UNINIT = &STATE_PLAYING_UNINIT;
 
 	STATE_VICTORY = (PROGRAM_STATE*)malloc(sizeof(PROGRAM_STATE));
 	STATE_VICTORY->INIT = &STATE_VICTORY_INIT;
 	STATE_VICTORY->LOOP = &STATE_VICTORY_LOOP;
+	STATE_VICTORY->RESIZE = &STATE_VICTORY_RESIZE;
 	STATE_VICTORY->UNINIT = &STATE_VICTORY_UNINIT;
 
 	STATE_DEFEAT = (PROGRAM_STATE*)malloc(sizeof(PROGRAM_STATE));
 	STATE_DEFEAT->INIT = &STATE_DEFEAT_INIT;
 	STATE_DEFEAT->LOOP = &STATE_DEFEAT_LOOP;
+	STATE_DEFEAT->RESIZE = &STATE_DEFEAT_RESIZE;
 	STATE_DEFEAT->UNINIT = &STATE_DEFEAT_UNINIT;
 
 	STATE_QUITTING = (PROGRAM_STATE*)malloc(sizeof(PROGRAM_STATE));
 	STATE_QUITTING->INIT = &empty_funtcion;
 	STATE_QUITTING->LOOP = &empty_funtcion;
+	STATE_QUITTING->RESIZE = &empty_funtcion;
 	STATE_QUITTING->UNINIT = &empty_funtcion;
 
 
@@ -176,6 +178,19 @@ int main()
 	{
 		Application.LastRun = SDL_GetTicks();
 
+		SDL_Event event;
+		SDL_PumpEvents();
+		if(SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_ALLEVENTS) == 1)
+		{
+			if(SDL_VIDEORESIZE == event.type)
+			{
+				SDL_WaitEvent(&event);
+				assert(SDL_VIDEORESIZE == event.type);
+				// printf("\nResize debug: %dx%d!\n", event.resize.w, event.resize.h);
+				Application.Output = SDL_SetVideoMode(event.resize.w, event.resize.h, 0, SDL_ANYFORMAT | SDL_RESIZABLE);
+				Application.State->RESIZE();
+			}
+		}
 		Application.State->LOOP();
 
 

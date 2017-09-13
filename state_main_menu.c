@@ -3,8 +3,7 @@
 
 void STATE_MAIN_MENU_INIT()
 {
-	// nincs mit inicializálni
-
+	SDL_FillRect(Application.Output, NULL, SDL_MapRGB(Application.Output->format, 0, 0, 0));
 	return;
 }
 
@@ -321,10 +320,11 @@ void STATE_MAIN_MENU_LOOP()
 			PROGRAM_SWITCH_STATE(STATE_QUITTING);
 		break;
 
-		case SDL_VIDEORESIZE:
-			Application.Output = SDL_SetVideoMode(Application.e.resize.w, Application.e.resize.h, 0, SDL_ANYFORMAT | SDL_RESIZABLE);
-			break;
-
 		default: break;
 	}
+}
+
+void STATE_MAIN_MENU_RESIZE()
+{
+	// Következő LOOP mindent jól újrarajzol.
 }

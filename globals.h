@@ -76,6 +76,7 @@ typedef struct
 {
 	STATE_FUNC INIT;
 	STATE_FUNC LOOP;
+	STATE_FUNC RESIZE;
 	STATE_FUNC UNINIT;
 } PROGRAM_STATE; // egyes állapotok struktúrái
 

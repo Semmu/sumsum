@@ -97,3 +97,9 @@ void STATE_VIEW_HIGHSCORES_LOOP()
 		PROGRAM_SWITCH_STATE(STATE_MAIN_MENU);
 	}
 }
+
+void STATE_VIEW_HIGHSCORES_RESIZE()
+{
+	// Átméretezéskor újra kell inicializálni a highscore állapotot.
+	STATE_VIEW_HIGHSCORES_INIT();
+}
