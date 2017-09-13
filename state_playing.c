@@ -178,6 +178,7 @@ void STATE_PLAYING_UNINIT()
 
 void STATE_PLAYING_LOOP()
 {
+	int repeat;
 	while (SDL_PollEvent(&Application.e))
 	{
 		switch (Application.e.type)
@@ -204,6 +205,20 @@ void STATE_PLAYING_LOOP()
 
 					case SDLK_DOWN:
 						KeyDown.Down = 1;
+					break;
+
+					case SDLK_HOME:
+						for (repeat = 0; repeat < 10; ++repeat)
+						{
+							TownCreatePeasant(Match.SelectedTown);
+						}
+					break;
+
+					case SDLK_END:
+						for (repeat = 0; repeat < 10; ++repeat)
+						{
+							TownCreateWarrior(Match.SelectedTown);
+						}
 					break;
 
 					case SDLK_PAGEUP:
