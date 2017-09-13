@@ -17,6 +17,7 @@ void STATE_MAIN_MENU_UNINIT()
 void STATE_MAIN_MENU_LOOP()
 {
 	SDL_Rect rect;
+	Uint32 rect_color;
 	SDL_Surface *text = NULL;
 
 
@@ -28,6 +29,24 @@ void STATE_MAIN_MENU_LOOP()
 	rect.y = 0;
 	SDL_BlitSurface(Image.MAIN_MENU_BG, NULL, Application.Output, &rect);
 
+
+	/*
+	**	FELHASZNÁLÓ NEVE
+	*/
+
+	rect.w = 250;
+	rect.h = 50;
+	rect.x = Application.Output->w / 2 - rect.w / 2;
+	rect.y = MAIN_MENU_Y;
+	if (MainMenu.State == STATE_MAIN_MENU_PLAYER_NAME)
+	{
+		rect_color = SDL_MapRGB(Application.Output->format, 50, 50, 50);
+	}
+	else
+	{
+		rect_color = SDL_MapRGB(Application.Output->format, 30, 30, 30);
+	}
+	SDL_FillRect(Application.Output, &rect, rect_color);
 
 	if (strlen(MainMenu.PlayerName) > 0)
 	{
@@ -215,7 +234,7 @@ void STATE_MAIN_MENU_LOOP()
 					break;
 
 					case SDLK_UP:
-						if (MainMenu.State > STATE_MAIN_MENU_PLAYER_COLOR)
+						if (MainMenu.State > STATE_MAIN_MENU_PLAYER_NAME)
 							MainMenu.State -= 1;
 					break;
 
@@ -302,7 +321,7 @@ void STATE_MAIN_MENU_LOOP()
 					break;
 
 					default:
-						if ((Application.e.key.keysym.sym == ' ' || (Application.e.key.keysym.sym >= 'a' && Application.e.key.keysym.sym <= 'z') || (Application.e.key.keysym.sym >= '0' && Application.e.key.keysym.sym <= '9')))
+						if (MainMenu.State == STATE_MAIN_MENU_PLAYER_NAME && (Application.e.key.keysym.sym == ' ' || (Application.e.key.keysym.sym >= 'a' && Application.e.key.keysym.sym <= 'z') || (Application.e.key.keysym.sym >= '0' && Application.e.key.keysym.sym <= '9')))
 						{
 							int len = strlen(MainMenu.PlayerName);
 

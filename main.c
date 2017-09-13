@@ -160,12 +160,12 @@ int main()
 	**	FŐMENÜ BEÁLLÍTÁSA
 	*/
 
-	strcpy(MainMenu.PlayerName, "Player");
+	strcpy(MainMenu.PlayerName, "Playername");
 	MainMenu.NumberOfEnemies = 2;
 	MainMenu.Difficulty = DIFFICULTY_NORMAL;
 	MainMenu.StartingResources = RESOURCES_NORMAL;
 	MainMenu.MapSize = MAP_SIZE_NORMAL;
- 	MainMenu.State = STATE_MAIN_MENU_PLAYER_COLOR;
+ 	MainMenu.State = STATE_MAIN_MENU_PLAYER_NAME;
 
 
 

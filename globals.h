@@ -95,6 +95,7 @@ typedef struct
 typedef enum
 {	// főmenü állapotai - melyik menüpont az aktív
 
+	STATE_MAIN_MENU_PLAYER_NAME,
 	STATE_MAIN_MENU_PLAYER_COLOR,
 	STATE_MAIN_MENU_NUMBER_OF_ENEMIES,
 	STATE_MAIN_MENU_DIFFICULTY,
