@@ -148,6 +148,7 @@ int main()
 
 	Image.SELECTED_TOWN_BORDER = IMG_Load("res/selected_town_border.png");
 	Image.SELECTED_ENEMY_TOWN_BORDER = IMG_Load("res/selected_enemy_town_border.png");
+	Image.ENEMY_TOWN_TO_SELECT_AFTER_CAPTURE_BORDER = IMG_Load("res/next_town_to_select_border.png");
 
 	Image.HAND = IMG_Load("res/hand.png");
 

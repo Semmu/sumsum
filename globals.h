@@ -145,7 +145,14 @@ typedef struct
 {
 	// képek betöltésére és elérésére
 
-	SDL_Surface *Town[8], *Unit[8], *MAIN_MENU_BG, *SELECTED_TOWN_BORDER, *SELECTED_ENEMY_TOWN_BORDER, *GRASS, *HAND;
+	SDL_Surface *Town[8];
+	SDL_Surface *Unit[8];
+	SDL_Surface *MAIN_MENU_BG;
+	SDL_Surface *SELECTED_TOWN_BORDER;
+	SDL_Surface *SELECTED_ENEMY_TOWN_BORDER;
+	SDL_Surface *ENEMY_TOWN_TO_SELECT_AFTER_CAPTURE_BORDER;
+	SDL_Surface *GRASS;
+	SDL_Surface *HAND;
 } Images;
 
 
@@ -194,7 +201,7 @@ typedef struct
 
 	Color PlayerColor; // játékos színe
 	char PlayerName[PLAYER_NAME_LENGTH + 1]; // játékos neve
-	Town *SelectedTown, *SelectedEnemyTown; // kiválasztott saját és ellenséges falu
+	Town *SelectedTown, *SelectedEnemyTown, *EnemyTownToSelectAfterCapture; // kiválasztott saját és ellenséges falu
 } MatchProperties;
 
 

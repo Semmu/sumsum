@@ -27,6 +27,7 @@ void STATE_PLAYING_INIT()
 	Match.UNITS_END->PREV = Match.UNITS_BEGIN;
 
 	Match.SelectedEnemyTown = NULL;
+	Match.EnemyTownToSelectAfterCapture = NULL;
 	Match.SelectedTown = NULL;
 
 	Match.TOWNS = Match.LAST_TOWN = (Town*)malloc(sizeof(Town));
@@ -269,6 +270,10 @@ void STATE_PLAYING_LOOP()
 			case SDL_MOUSEBUTTONDOWN:
 			{
 				Town *it;
+				if (Application.e.button.button == SDL_BUTTON_LEFT)
+				{
+					Match.EnemyTownToSelectAfterCapture = NULL;
+				}
 
 				for (it = Match.TOWNS->NEXT; it != NULL; it = it->NEXT)
 				{
@@ -283,7 +288,7 @@ void STATE_PLAYING_LOOP()
 							if (it->Color == Match.PlayerColor)
 								Match.SelectedTown = it;
 							else
-								Match.SelectedEnemyTown = it;
+								Match.EnemyTownToSelectAfterCapture = it;
 						}
 
 						if (Application.e.button.button == SDL_BUTTON_RIGHT)
@@ -387,6 +392,12 @@ void STATE_PLAYING_LOOP()
 
 						if (Match.SelectedEnemyTown == u_it->TO)
 							Match.SelectedEnemyTown = NULL;
+
+						if (Match.EnemyTownToSelectAfterCapture == u_it->TO && u_it->Color == Match.PlayerColor)
+						{
+							Match.EnemyTownToSelectAfterCapture = NULL;
+							Match.SelectedTown = u_it->TO;
+						}
 					}
 				}
 			}
@@ -500,6 +511,13 @@ void STATE_PLAYING_LOOP()
 			rect.x = t_it->Position.X * IMAGINARY_GRID_SIZE - TOWN_TILE_SIZE / 2 - Match.Viewport.X;
 			rect.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - TOWN_TILE_SIZE / 2 - Match.Viewport.Y;
 			SDL_BlitSurface(Image.SELECTED_TOWN_BORDER, NULL, Application.Output, &rect);
+		}
+
+		if (Match.EnemyTownToSelectAfterCapture == t_it)
+		{
+			rect.x = t_it->Position.X * IMAGINARY_GRID_SIZE - TOWN_TILE_SIZE / 2 - Match.Viewport.X;
+			rect.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - TOWN_TILE_SIZE / 2 - Match.Viewport.Y;
+			SDL_BlitSurface(Image.ENEMY_TOWN_TO_SELECT_AFTER_CAPTURE_BORDER, NULL, Application.Output, &rect);
 		}
 
 		if (Match.SelectedEnemyTown == t_it)
