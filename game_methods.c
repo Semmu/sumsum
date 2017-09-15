@@ -130,6 +130,11 @@ int CheckPlayerVictory()
 	*/
 
 
+	if (NOCOLOR == Match.PlayerColor)
+	{
+		return 0;
+	}
+
 	Town *t;
 	for (t = Match.TOWNS->NEXT; t != NULL; t = t->NEXT)
 		if (t->Color != Match.PlayerColor)
@@ -148,6 +153,11 @@ int CheckPlayerDefeat()
 	/*
 	**	"JÁTÉKOS VESZTETT-E" FGV., 1-ET AD VISSZA, HA IGEN, MINDEN MÁS ESETBEN 0-T
 	*/
+
+	if (NOCOLOR == Match.PlayerColor)
+	{
+		return 0;
+	}
 
 	Town *t;
 	for (t = Match.TOWNS->NEXT; t != NULL; t = t->NEXT)

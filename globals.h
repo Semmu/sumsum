@@ -60,7 +60,7 @@ typedef struct
 typedef enum
 {	// alapvető játszható színek tárolásához
 
-	RED, YELLOW, GREEN, BLUE, PURPLE, PINK, BLACK, WHITE
+	RED, YELLOW, GREEN, BLUE, PURPLE, PINK, BLACK, WHITE, NOCOLOR
 } Color;
 
 typedef struct

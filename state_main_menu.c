@@ -73,6 +73,8 @@ void STATE_MAIN_MENU_LOOP()
 	SDL_BlitSurface(text, NULL, Application.Output, &rect);
 	SDL_FreeSurface(text);
 
+	if (NOCOLOR != MainMenu.PlayerColor)
+	{
 		// választott érték
 		text = TTF_RenderText_Solid(Application.FONT, "< x >", MainMenu.State == STATE_MAIN_MENU_PLAYER_COLOR ? TextColor.GOLD : TextColor.LIGHT_GRAY);
 		rect.x = Application.Output->w / 2 + MAIN_MENU_WIDTH / 2 - text->w;
@@ -85,6 +87,14 @@ void STATE_MAIN_MENU_LOOP()
 		rect2.x = Application.Output->w / 2 + MAIN_MENU_WIDTH / 2 - 21;
 		rect2.y = rect.y + 3;
 		SDL_FillRect(Application.Output, &rect2, ColorValue.INT[MainMenu.PlayerColor]);
+	}
+	else
+	{
+		text = TTF_RenderText_Solid(Application.FONT, "< spectator >", MainMenu.State == STATE_MAIN_MENU_PLAYER_COLOR ? TextColor.GOLD : TextColor.LIGHT_GRAY);
+		rect.x = Application.Output->w / 2 + MAIN_MENU_WIDTH / 2 - text->w;
+		SDL_BlitSurface(text, NULL, Application.Output, &rect);
+		SDL_FreeSurface(text);
+	}
 
 
 
@@ -283,7 +293,7 @@ void STATE_MAIN_MENU_LOOP()
 						switch (MainMenu.State)
 						{
 							case STATE_MAIN_MENU_PLAYER_COLOR:
-								if (MainMenu.PlayerColor < WHITE)
+								if (MainMenu.PlayerColor < NOCOLOR)
 									MainMenu.PlayerColor++;
 							break;
 

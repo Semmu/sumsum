@@ -81,7 +81,7 @@ void STATE_PLAYING_INIT()
 		{
 			invalid = 0; // feltételezem, hogy jó színt fog generálni
 
-			if (i == Match.NumberOfEnemies / 2) // ha pont a "középsőedik" falut hoztam létre, akkor az legyen a játékos faluja
+			if (NOCOLOR != Match.PlayerColor && i == Match.NumberOfEnemies / 2) // ha pont a "középsőedik" falut hoztam létre, akkor az legyen a játékos faluja
 			{
 				this->Color = Match.PlayerColor;
 				Match.SelectedTown = this;
@@ -128,8 +128,16 @@ void STATE_PLAYING_INIT()
 	Match.Center.X /= town_count;
 	Match.Center.Y /= town_count;
 
-	Match.Viewport.X = Match.SelectedTown->Position.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
-	Match.Viewport.Y = Match.SelectedTown->Position.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+	if (NULL != Match.SelectedTown)
+	{
+		Match.Viewport.X = Match.SelectedTown->Position.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
+		Match.Viewport.Y = Match.SelectedTown->Position.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+	}
+	else
+	{
+		Match.Viewport.X = Match.Center.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
+		Match.Viewport.Y = Match.Center.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+	}
 
 	Match.VIEWPORT_MIN.X = Match.TOWNS->NEXT->Position.X;
 	Match.VIEWPORT_MIN.Y = Match.TOWNS->NEXT->Position.Y;
