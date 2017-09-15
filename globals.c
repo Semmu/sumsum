@@ -22,7 +22,8 @@ void PROGRAM_SWITCH_STATE(PROGRAM_STATE *State)
 
 int randmax(int be)
 {
-	return (int)((double)rand() / RAND_MAX * be);
+	int random = (int)((double)rand() / RAND_MAX * be);
+	return random != be ? random : be-1;
 }
 
 SDL_Surface *IMG_Load_Optimized(char *filename)
