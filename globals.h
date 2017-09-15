@@ -187,7 +187,7 @@ typedef struct
 
 	int STARTED;
 
-	Coord Viewport, VIEWPORT_MAX, VIEWPORT_MIN; // nézőpont tárolása és a két szélsőértéké (ezek közé szorítom pe mindig a nézőpontot)
+	Coord Viewport, VIEWPORT_MAX, VIEWPORT_MIN, Center; // nézőpont tárolása és a két szélsőértéké (ezek közé szorítom pe mindig a nézőpontot)
 	int NumberOfEnemies, // ellenségek száma
 	    Difficulty, // nehézség
 	    MINIMUM_DISTANCE, // minimális távolság a falvak között

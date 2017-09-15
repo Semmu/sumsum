@@ -116,6 +116,18 @@ void STATE_PLAYING_INIT()
 		Match.LAST_TOWN = this;
 	}
 
+	Town *t_it;
+	int town_count = 0;
+	Match.Center.X = Match.Center.Y = 0;
+	for (t_it = Match.TOWNS->NEXT; t_it != NULL; t_it = t_it->NEXT)
+	{
+		Match.Center.X += t_it->Position.X;
+		Match.Center.Y += t_it->Position.Y;
+		++town_count;
+	}
+	Match.Center.X /= town_count;
+	Match.Center.Y /= town_count;
+
 	Match.Viewport.X = Match.SelectedTown->Position.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
 	Match.Viewport.Y = Match.SelectedTown->Position.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
 
@@ -231,8 +243,16 @@ void STATE_PLAYING_LOOP()
 					break;
 
 					case SDLK_c:
-						Match.Viewport.X = Match.SelectedTown->Position.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
-						Match.Viewport.Y = Match.SelectedTown->Position.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+						if (NULL != Match.SelectedTown)
+						{
+							Match.Viewport.X = Match.SelectedTown->Position.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
+							Match.Viewport.Y = Match.SelectedTown->Position.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+						}
+						else
+						{
+							Match.Viewport.X = Match.Center.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
+							Match.Viewport.Y = Match.Center.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+						}
 					break;
 
 					default: break;
@@ -293,7 +313,7 @@ void STATE_PLAYING_LOOP()
 
 						if (Application.e.button.button == SDL_BUTTON_RIGHT)
 						{
-							if (Match.SelectedTown->warriors >= UNIT_SIZE)
+							if (NULL != Match.SelectedTown && Match.SelectedTown->warriors >= UNIT_SIZE)
 							{
 								TownSendUnit(Match.SelectedTown, it);
 								Match.SelectedEnemyTown = it;
@@ -377,14 +397,18 @@ void STATE_PLAYING_LOOP()
 					{
 						// ha parasztokkal is kevesebb
 
+						// Ha ez volt a játékos kiválasztott faluja, akkor válasszunk ki neki egy másikat.
 						if (u_it->TO->Color == Match.PlayerColor && Match.SelectedTown == u_it->TO)
 						{
-							for (t_it = Match.TOWNS->NEXT; t_it != NULL && t_it->Color != Match.PlayerColor; t_it = t_it->NEXT);
-
-							if (t_it != NULL)
-								Match.SelectedTown = t_it;
-							else
-								Match.SelectedTown = NULL;
+							Match.SelectedTown = NULL;
+							for (t_it = Match.TOWNS->NEXT; t_it != NULL; t_it = t_it->NEXT)
+							{
+								if (t_it->Color == Match.PlayerColor && t_it != u_it->TO)
+								{
+									Match.SelectedTown = t_it;
+									break;
+								}
+							}
 						}
 
 						u_it->TO->peasants = u_it->TO->warriors = UNIT_SIZE / 2;
