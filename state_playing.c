@@ -398,8 +398,8 @@ void STATE_PLAYING_LOOP()
 					{
 						// ha parasztokkal több
 
-						u_it->TO->warriors = 0;
 						u_it->TO->peasants = (u_it->TO->warriors * PEASANT_WARRIOR_RATIO + u_it->TO->peasants - PEASANT_WARRIOR_RATIO * UNIT_SIZE);
+						u_it->TO->warriors = 0;
 					}
 					else
 					{
