@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "globals.h"
 #include "state_view_highscores.h"
 
@@ -49,7 +50,19 @@ void STATE_VIEW_HIGHSCORES_INIT()
 
 	FILE *in = fopen("highscores.dat", "rt");
 	for (c = 0; c < 10; c++)
-		fscanf(in, "%[^\n,],%d\n", scores[c].name, &scores[c].score);
+	{
+		char line[1024];
+		fgets(line, 1024, in);
+		assert('\n' == line[strlen(line)-1]);
+		char* lp = line;
+		for (; '\0' != *lp && ',' != *lp && lp - line < sizeof(scores[c].name)+1; ++lp)
+		{
+			scores[c].name[lp-line] = *lp;
+		}
+		scores[c].name[lp-line] = '\0';
+		assert(',' == *lp);
+		sscanf(++lp, "%d", &scores[c].score);
+	}
 	fclose(in);
 
 	char scoretxt[10]; // pontszám sztringje
