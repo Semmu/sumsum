@@ -162,6 +162,7 @@ int main()
 	*/
 
 	strcpy(MainMenu.PlayerName, "Playername");
+	MainMenu.PlayerTypedAName = 0;
 	MainMenu.NumberOfEnemies = 2;
 	MainMenu.Difficulty = DIFFICULTY_NORMAL;
 	MainMenu.StartingResources = RESOURCES_NORMAL;

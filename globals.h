@@ -130,7 +130,8 @@ typedef struct
 
 	MainMenuState State; // melyik menüpont az aktív
 
-	char PlayerName[PLAYER_NAME_LENGTH]; // mi a begépelt játékosnév
+	char PlayerName[PLAYER_NAME_LENGTH + 1]; // mi a begépelt játékosnév
+	int PlayerTypedAName;
 
 	Color PlayerColor; // játékos választott színe
 	int NumberOfEnemies; // választott ellenségek száma

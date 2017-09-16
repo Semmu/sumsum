@@ -235,7 +235,15 @@ void STATE_MAIN_MENU_LOOP()
 					break;
 
 					case SDLK_BACKSPACE:
-						MainMenu.PlayerName[strlen(MainMenu.PlayerName) - 1] = '\0';
+						if (!MainMenu.PlayerTypedAName)
+						{
+							MainMenu.PlayerTypedAName = 1;
+							MainMenu.PlayerName[0] = '\0';
+						}
+						if (strlen(MainMenu.PlayerName) > 0)
+						{
+							MainMenu.PlayerName[strlen(MainMenu.PlayerName) - 1] = '\0';
+						}
 					break;
 
 					case SDLK_DOWN:
@@ -333,6 +341,11 @@ void STATE_MAIN_MENU_LOOP()
 					default:
 						if (MainMenu.State == STATE_MAIN_MENU_PLAYER_NAME && (Application.e.key.keysym.sym == ' ' || (Application.e.key.keysym.sym >= 'a' && Application.e.key.keysym.sym <= 'z') || (Application.e.key.keysym.sym >= '0' && Application.e.key.keysym.sym <= '9')))
 						{
+							if (!MainMenu.PlayerTypedAName)
+							{
+								MainMenu.PlayerTypedAName = 1;
+								MainMenu.PlayerName[0] = '\0';
+							}
 							int len = strlen(MainMenu.PlayerName);
 
 							if (len < PLAYER_NAME_LENGTH)
