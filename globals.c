@@ -20,10 +20,22 @@ void PROGRAM_SWITCH_STATE(PROGRAM_STATE *State)
 	Application.NextState = State;
 }
 
-int randmax(int be)
+// Egy pszeudo véletlen számot ad vissza 0..(number-1) intervallumban (inkluzív).
+// Ez egy biztonságos függvény, nem pozitív számmal hívva nullával tér vissza.
+// Érdemes egyszer meghívni a srand(time(NULL)) utasítást a main függvényben a használata előtt.
+int randmax(int number)
 {
-	int random = (int)((double)rand() / RAND_MAX * be);
-	return random != be ? random : be-1;
+	if (number <= 0)
+	{
+		// Hasznos felhasználni a seed-et akkor is, ha rossz az input.
+		// Azaz ha hívnak randmax()-ot, akkor hívódik rand() is.
+		rand();
+		return 0;
+	}
+	int random = rand() % number;
+
+	// Csak a biztonság kedvéért ellenőrizzük az intervallumot.
+	return (random >= 0 && random < number) ? random : 0;
 }
 
 SDL_Surface *IMG_Load_Optimized(char *filename)
