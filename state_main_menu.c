@@ -34,7 +34,14 @@ void STATE_MAIN_MENU_LOOP()
 	**	FELHASZNÁLÓ NEVE
 	*/
 
-	rect.w = 250;
+	int player_name_width = 0;
+	text = NULL;
+	if (strlen(MainMenu.PlayerName) > 0)
+	{
+		text = TTF_RenderText_Blended(Application.FONT_MORPHEUS, MainMenu.PlayerName, TextColor.GOLD);
+		player_name_width = text->w;
+	}
+	rect.w = player_name_width+10 > 250 ? player_name_width+10 : 250;
 	rect.h = 50;
 	rect.x = Application.Output->w / 2 - rect.w / 2;
 	rect.y = MAIN_MENU_Y;
@@ -48,13 +55,12 @@ void STATE_MAIN_MENU_LOOP()
 	}
 	SDL_FillRect(Application.Output, &rect, rect_color);
 
-	if (strlen(MainMenu.PlayerName) > 0)
+	if (NULL != text)
 	{
 		/*
 		**	HA A FELHASZNÁLÓ NEVE NEM ÜRES (különben behal, mert nincs renderelendő string)
 		*/
 
-		text = TTF_RenderText_Blended(Application.FONT_MORPHEUS, MainMenu.PlayerName, TextColor.GOLD);
 		rect.x = Application.Output->w / 2 - text->w / 2;
 		rect.y = MAIN_MENU_Y;
 		rect.w = rect.h = 0;
