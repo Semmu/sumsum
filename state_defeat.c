@@ -49,6 +49,12 @@ void STATE_DEFEAT_LOOP()
 	}
 }
 
+void STATE_DEFEAT_RESIZE()
+{
+	// Átméretezéskor újra kell inicializálni a defeat állapotot.
+	STATE_DEFEAT_INIT();
+}
+
 void STATE_DEFEAT_UNINIT()
 {
 	// nincs mit feltakarítani

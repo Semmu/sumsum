@@ -3,8 +3,7 @@
 
 void STATE_MAIN_MENU_INIT()
 {
-	// nincs mit inicializálni
-
+	SDL_FillRect(Application.Output, NULL, SDL_MapRGB(Application.Output->format, 0, 0, 0));
 	return;
 }
 
@@ -18,6 +17,7 @@ void STATE_MAIN_MENU_UNINIT()
 void STATE_MAIN_MENU_LOOP()
 {
 	SDL_Rect rect;
+	Uint32 rect_color;
 	SDL_Surface *text = NULL;
 
 
@@ -30,13 +30,37 @@ void STATE_MAIN_MENU_LOOP()
 	SDL_BlitSurface(Image.MAIN_MENU_BG, NULL, Application.Output, &rect);
 
 
+	/*
+	**	FELHASZNÁLÓ NEVE
+	*/
+
+	int player_name_width = 0;
+	text = NULL;
 	if (strlen(MainMenu.PlayerName) > 0)
+	{
+		text = TTF_RenderText_Blended(Application.FONT_MORPHEUS, MainMenu.PlayerName, TextColor.GOLD);
+		player_name_width = text->w;
+	}
+	rect.w = player_name_width+10 > 250 ? player_name_width+10 : 250;
+	rect.h = 50;
+	rect.x = Application.Output->w / 2 - rect.w / 2;
+	rect.y = MAIN_MENU_Y;
+	if (MainMenu.State == STATE_MAIN_MENU_PLAYER_NAME)
+	{
+		rect_color = SDL_MapRGB(Application.Output->format, 50, 50, 50);
+	}
+	else
+	{
+		rect_color = SDL_MapRGB(Application.Output->format, 30, 30, 30);
+	}
+	SDL_FillRect(Application.Output, &rect, rect_color);
+
+	if (NULL != text)
 	{
 		/*
 		**	HA A FELHASZNÁLÓ NEVE NEM ÜRES (különben behal, mert nincs renderelendő string)
 		*/
 
-		text = TTF_RenderText_Blended(Application.FONT_MORPHEUS, MainMenu.PlayerName, TextColor.GOLD);
 		rect.x = Application.Output->w / 2 - text->w / 2;
 		rect.y = MAIN_MENU_Y;
 		rect.w = rect.h = 0;
@@ -55,6 +79,8 @@ void STATE_MAIN_MENU_LOOP()
 	SDL_BlitSurface(text, NULL, Application.Output, &rect);
 	SDL_FreeSurface(text);
 
+	if (NOCOLOR != MainMenu.PlayerColor)
+	{
 		// választott érték
 		text = TTF_RenderText_Solid(Application.FONT, "< x >", MainMenu.State == STATE_MAIN_MENU_PLAYER_COLOR ? TextColor.GOLD : TextColor.LIGHT_GRAY);
 		rect.x = Application.Output->w / 2 + MAIN_MENU_WIDTH / 2 - text->w;
@@ -67,6 +93,14 @@ void STATE_MAIN_MENU_LOOP()
 		rect2.x = Application.Output->w / 2 + MAIN_MENU_WIDTH / 2 - 21;
 		rect2.y = rect.y + 3;
 		SDL_FillRect(Application.Output, &rect2, ColorValue.INT[MainMenu.PlayerColor]);
+	}
+	else
+	{
+		text = TTF_RenderText_Solid(Application.FONT, "< spectator >", MainMenu.State == STATE_MAIN_MENU_PLAYER_COLOR ? TextColor.GOLD : TextColor.LIGHT_GRAY);
+		rect.x = Application.Output->w / 2 + MAIN_MENU_WIDTH / 2 - text->w;
+		SDL_BlitSurface(text, NULL, Application.Output, &rect);
+		SDL_FreeSurface(text);
+	}
 
 
 
@@ -207,7 +241,15 @@ void STATE_MAIN_MENU_LOOP()
 					break;
 
 					case SDLK_BACKSPACE:
-						MainMenu.PlayerName[strlen(MainMenu.PlayerName) - 1] = '\0';
+						if (!MainMenu.PlayerTypedAName)
+						{
+							MainMenu.PlayerTypedAName = 1;
+							MainMenu.PlayerName[0] = '\0';
+						}
+						if (strlen(MainMenu.PlayerName) > 0)
+						{
+							MainMenu.PlayerName[strlen(MainMenu.PlayerName) - 1] = '\0';
+						}
 					break;
 
 					case SDLK_DOWN:
@@ -216,7 +258,7 @@ void STATE_MAIN_MENU_LOOP()
 					break;
 
 					case SDLK_UP:
-						if (MainMenu.State > STATE_MAIN_MENU_PLAYER_COLOR)
+						if (MainMenu.State > STATE_MAIN_MENU_PLAYER_NAME)
 							MainMenu.State -= 1;
 					break;
 
@@ -265,7 +307,7 @@ void STATE_MAIN_MENU_LOOP()
 						switch (MainMenu.State)
 						{
 							case STATE_MAIN_MENU_PLAYER_COLOR:
-								if (MainMenu.PlayerColor < WHITE)
+								if (MainMenu.PlayerColor < NOCOLOR)
 									MainMenu.PlayerColor++;
 							break;
 
@@ -303,8 +345,13 @@ void STATE_MAIN_MENU_LOOP()
 					break;
 
 					default:
-						if ((Application.e.key.keysym.sym == ' ' || (Application.e.key.keysym.sym >= 'a' && Application.e.key.keysym.sym <= 'z') || (Application.e.key.keysym.sym >= '0' && Application.e.key.keysym.sym <= '9')))
+						if (MainMenu.State == STATE_MAIN_MENU_PLAYER_NAME && (Application.e.key.keysym.sym == ' ' || (Application.e.key.keysym.sym >= 'a' && Application.e.key.keysym.sym <= 'z') || (Application.e.key.keysym.sym >= '0' && Application.e.key.keysym.sym <= '9')))
 						{
+							if (!MainMenu.PlayerTypedAName)
+							{
+								MainMenu.PlayerTypedAName = 1;
+								MainMenu.PlayerName[0] = '\0';
+							}
 							int len = strlen(MainMenu.PlayerName);
 
 							if (len < PLAYER_NAME_LENGTH)
@@ -323,4 +370,9 @@ void STATE_MAIN_MENU_LOOP()
 
 		default: break;
 	}
+}
+
+void STATE_MAIN_MENU_RESIZE()
+{
+	// Következő LOOP mindent jól újrarajzol.
 }

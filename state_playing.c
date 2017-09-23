@@ -27,6 +27,7 @@ void STATE_PLAYING_INIT()
 	Match.UNITS_END->PREV = Match.UNITS_BEGIN;
 
 	Match.SelectedEnemyTown = NULL;
+	Match.EnemyTownToSelectAfterCapture = NULL;
 	Match.SelectedTown = NULL;
 
 	Match.TOWNS = Match.LAST_TOWN = (Town*)malloc(sizeof(Town));
@@ -80,7 +81,7 @@ void STATE_PLAYING_INIT()
 		{
 			invalid = 0; // feltételezem, hogy jó színt fog generálni
 
-			if (i == Match.NumberOfEnemies / 2) // ha pont a "középsőedik" falut hoztam létre, akkor az legyen a játékos faluja
+			if (NOCOLOR != Match.PlayerColor && i == Match.NumberOfEnemies / 2) // ha pont a "középsőedik" falut hoztam létre, akkor az legyen a játékos faluja
 			{
 				this->Color = Match.PlayerColor;
 				Match.SelectedTown = this;
@@ -115,8 +116,28 @@ void STATE_PLAYING_INIT()
 		Match.LAST_TOWN = this;
 	}
 
-	Match.Viewport.X = Match.SelectedTown->Position.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
-	Match.Viewport.Y = Match.SelectedTown->Position.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+	Town *t_it;
+	int town_count = 0;
+	Match.Center.X = Match.Center.Y = 0;
+	for (t_it = Match.TOWNS->NEXT; t_it != NULL; t_it = t_it->NEXT)
+	{
+		Match.Center.X += t_it->Position.X;
+		Match.Center.Y += t_it->Position.Y;
+		++town_count;
+	}
+	Match.Center.X /= town_count;
+	Match.Center.Y /= town_count;
+
+	if (NULL != Match.SelectedTown)
+	{
+		Match.Viewport.X = Match.SelectedTown->Position.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
+		Match.Viewport.Y = Match.SelectedTown->Position.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+	}
+	else
+	{
+		Match.Viewport.X = Match.Center.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
+		Match.Viewport.Y = Match.Center.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+	}
 
 	Match.VIEWPORT_MIN.X = Match.TOWNS->NEXT->Position.X;
 	Match.VIEWPORT_MIN.Y = Match.TOWNS->NEXT->Position.Y;
@@ -178,6 +199,7 @@ void STATE_PLAYING_UNINIT()
 
 void STATE_PLAYING_LOOP()
 {
+	int repeat;
 	while (SDL_PollEvent(&Application.e))
 	{
 		switch (Application.e.type)
@@ -206,6 +228,20 @@ void STATE_PLAYING_LOOP()
 						KeyDown.Down = 1;
 					break;
 
+					case SDLK_HOME:
+						for (repeat = 0; repeat < 10; ++repeat)
+						{
+							TownCreatePeasant(Match.SelectedTown);
+						}
+					break;
+
+					case SDLK_END:
+						for (repeat = 0; repeat < 10; ++repeat)
+						{
+							TownCreateWarrior(Match.SelectedTown);
+						}
+					break;
+
 					case SDLK_PAGEUP:
 						TownCreatePeasant(Match.SelectedTown);
 					break;
@@ -215,8 +251,16 @@ void STATE_PLAYING_LOOP()
 					break;
 
 					case SDLK_c:
-						Match.Viewport.X = Match.SelectedTown->Position.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
-						Match.Viewport.Y = Match.SelectedTown->Position.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+						if (NULL != Match.SelectedTown)
+						{
+							Match.Viewport.X = Match.SelectedTown->Position.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
+							Match.Viewport.Y = Match.SelectedTown->Position.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+						}
+						else
+						{
+							Match.Viewport.X = Match.Center.X * IMAGINARY_GRID_SIZE - Application.Output->w / 2;
+							Match.Viewport.Y = Match.Center.Y * IMAGINARY_GRID_SIZE - Application.Output->h / 2;
+						}
 					break;
 
 					default: break;
@@ -254,6 +298,10 @@ void STATE_PLAYING_LOOP()
 			case SDL_MOUSEBUTTONDOWN:
 			{
 				Town *it;
+				if (Application.e.button.button == SDL_BUTTON_LEFT)
+				{
+					Match.EnemyTownToSelectAfterCapture = NULL;
+				}
 
 				for (it = Match.TOWNS->NEXT; it != NULL; it = it->NEXT)
 				{
@@ -268,12 +316,12 @@ void STATE_PLAYING_LOOP()
 							if (it->Color == Match.PlayerColor)
 								Match.SelectedTown = it;
 							else
-								Match.SelectedEnemyTown = it;
+								Match.EnemyTownToSelectAfterCapture = it;
 						}
 
 						if (Application.e.button.button == SDL_BUTTON_RIGHT)
 						{
-							if (Match.SelectedTown->warriors >= UNIT_SIZE)
+							if (NULL != Match.SelectedTown && Match.SelectedTown->warriors >= UNIT_SIZE)
 							{
 								TownSendUnit(Match.SelectedTown, it);
 								Match.SelectedEnemyTown = it;
@@ -350,21 +398,25 @@ void STATE_PLAYING_LOOP()
 					{
 						// ha parasztokkal több
 
-						u_it->TO->warriors = 0;
 						u_it->TO->peasants = (u_it->TO->warriors * PEASANT_WARRIOR_RATIO + u_it->TO->peasants - PEASANT_WARRIOR_RATIO * UNIT_SIZE);
+						u_it->TO->warriors = 0;
 					}
 					else
 					{
 						// ha parasztokkal is kevesebb
 
+						// Ha ez volt a játékos kiválasztott faluja, akkor válasszunk ki neki egy másikat.
 						if (u_it->TO->Color == Match.PlayerColor && Match.SelectedTown == u_it->TO)
 						{
-							for (t_it = Match.TOWNS->NEXT; t_it != NULL && t_it->Color != Match.PlayerColor; t_it = t_it->NEXT);
-
-							if (t_it != NULL)
-								Match.SelectedTown = t_it;
-							else
-								Match.SelectedTown = NULL;
+							Match.SelectedTown = NULL;
+							for (t_it = Match.TOWNS->NEXT; t_it != NULL; t_it = t_it->NEXT)
+							{
+								if (t_it->Color == Match.PlayerColor && t_it != u_it->TO)
+								{
+									Match.SelectedTown = t_it;
+									break;
+								}
+							}
 						}
 
 						u_it->TO->peasants = u_it->TO->warriors = UNIT_SIZE / 2;
@@ -372,9 +424,21 @@ void STATE_PLAYING_LOOP()
 
 						if (Match.SelectedEnemyTown == u_it->TO)
 							Match.SelectedEnemyTown = NULL;
+
+						if (Match.EnemyTownToSelectAfterCapture == u_it->TO && u_it->Color == Match.PlayerColor)
+						{
+							Match.EnemyTownToSelectAfterCapture = NULL;
+							Match.SelectedTown = u_it->TO;
+						}
 					}
 				}
 			}
+
+			u_tmp = u_it->NEXT;
+			u_it->PREV->NEXT = u_it->NEXT;
+			u_it->NEXT->PREV = u_it->PREV;
+			free(u_it);
+			u_it = u_tmp;
 
 			/*
 			**	CHECK VICTORY/DEFEAT
@@ -386,11 +450,6 @@ void STATE_PLAYING_LOOP()
 			if (CheckPlayerDefeat())
 				PROGRAM_SWITCH_STATE(STATE_DEFEAT);
 
-			u_tmp = u_it->NEXT;
-			u_it->PREV->NEXT = u_it->NEXT;
-			u_it->NEXT->PREV = u_it->PREV;
-			free(u_it);
-			u_it = u_tmp;
 		}
 		else
 		{
@@ -486,31 +545,19 @@ void STATE_PLAYING_LOOP()
 			SDL_BlitSurface(Image.SELECTED_TOWN_BORDER, NULL, Application.Output, &rect);
 		}
 
+		if (Match.EnemyTownToSelectAfterCapture == t_it)
+		{
+			rect.x = t_it->Position.X * IMAGINARY_GRID_SIZE - TOWN_TILE_SIZE / 2 - Match.Viewport.X;
+			rect.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - TOWN_TILE_SIZE / 2 - Match.Viewport.Y;
+			SDL_BlitSurface(Image.ENEMY_TOWN_TO_SELECT_AFTER_CAPTURE_BORDER, NULL, Application.Output, &rect);
+		}
+
 		if (Match.SelectedEnemyTown == t_it)
 		{
 			rect.x = t_it->Position.X * IMAGINARY_GRID_SIZE - TOWN_TILE_SIZE / 2 - Match.Viewport.X;
 			rect.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - TOWN_TILE_SIZE / 2 - Match.Viewport.Y;
 			SDL_BlitSurface(Image.SELECTED_ENEMY_TOWN_BORDER, NULL, Application.Output, &rect);
 		}
-
-
-		char chars[10];
-		sprintf(chars, "%d", t_it->peasants);
-		rect.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - Match.Viewport.Y + 33;
-		rect.x = t_it->Position.X * IMAGINARY_GRID_SIZE - Match.Viewport.X + 25;
-		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
-
-		sprintf(chars, "%.0lf", t_it->resources);
-		rect.y += 15;
-		rect.x -= 48;
-		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
-
-		sprintf(chars, "%d", t_it->warriors);
-		rect.y -= 92;
-		rect.x -= 16;
-		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
-
-
 	}
 
 	// egységek megjelenítése
@@ -522,14 +569,37 @@ void STATE_PLAYING_LOOP()
 		double y = sin(angle) * movement;
 
 		SDL_Rect r;
-		r.x = (x + u_it->FROM->Position.X) * IMAGINARY_GRID_SIZE - Match.Viewport.X - 20;
-		r.y = (y + u_it->FROM->Position.Y) * IMAGINARY_GRID_SIZE - Match.Viewport.Y - 30;
+		r.x = (x + u_it->FROM->Position.X) * IMAGINARY_GRID_SIZE - Match.Viewport.X - UNIT_CENTER_X;
+		r.y = (y + u_it->FROM->Position.Y) * IMAGINARY_GRID_SIZE - Match.Viewport.Y - UNIT_CENTER_Y;
 		SDL_BlitSurface(Image.Unit[u_it->Color], NULL, Application.Output, &r);
 	}
 
 
 
 
+	// faluk feliratainak megjelenítése
+	t_it = Match.TOWNS;
+	for (t_it = Match.TOWNS->NEXT; t_it != NULL; t_it = t_it->NEXT)
+	{
+		char chars[10];
+		SDL_Rect town_on_screen;
+		sprintf(chars, "%d", t_it->peasants);
+		town_on_screen.x = t_it->Position.X * IMAGINARY_GRID_SIZE - Match.Viewport.X;
+		town_on_screen.y = t_it->Position.Y * IMAGINARY_GRID_SIZE - Match.Viewport.Y;
+		rect.x = town_on_screen.x + TOWN_OFFSET_PEASANT_X;
+		rect.y = town_on_screen.y + TOWN_OFFSET_PEASANT_Y;
+		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
+
+		sprintf(chars, "%.0lf", t_it->resources);
+		rect.x = town_on_screen.x + TOWN_OFFSET_RESOURCE_X;
+		rect.y = town_on_screen.y + TOWN_OFFSET_RESOURCE_Y;
+		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
+
+		sprintf(chars, "%d", t_it->warriors);
+		rect.x = town_on_screen.x + TOWN_OFFSET_WARRIOR_X;
+		rect.y = town_on_screen.y + TOWN_OFFSET_WARRIOR_Y;
+		TTF_RenderText_Outline(Application.Output, chars, Application.FONT, rect.x, rect.y, TextColor.WHITE, TextColor.BLACK);
+	}
 
 
 
@@ -565,4 +635,9 @@ void STATE_PLAYING_LOOP()
 	r.y = Application.Cursor.Y;
 
 	SDL_BlitSurface(Image.HAND, NULL, Application.Output, &r);
+}
+
+void STATE_PLAYING_RESIZE()
+{
+	// Következő LOOP mindent jól újrarajzol.
 }

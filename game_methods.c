@@ -59,6 +59,11 @@ void TownCreatePeasant(Town *this)
 	**	PARASZT KÉSZÍTÉS AZ ADOTT FALUBAN
 	*/
 
+	if (NULL == this)
+	{
+		return;
+	}
+
 	if (this->resources >= PEASANT_COST)
 	{
 		this->peasants += 1;
@@ -72,6 +77,11 @@ void TownCreateWarrior(Town *this)
 	**	KATONA KÉSZÍTÉS AZ ADOTT FALUBAN
 	*/
 
+	if (NULL == this)
+	{
+		return;
+	}
+
 	if (this->resources >= WARRIOR_COST && this->peasants * PEASANT_PRODUCTION_PER_MIN >= (this->warriors + 1) * WARRIOR_CONSUPTION_PER_MIN)
 	{
 		this->warriors += 1;
@@ -84,6 +94,11 @@ void TownCreateWarrior(Town *this)
 
 void TownSendUnit(Town *from, Town *to)
 {
+	if (NULL == from || NULL == to)
+	{
+		return;
+	}
+
 	if (from->warriors < UNIT_SIZE)
 		return;
 
@@ -115,6 +130,11 @@ int CheckPlayerVictory()
 	*/
 
 
+	if (NOCOLOR == Match.PlayerColor)
+	{
+		return 0;
+	}
+
 	Town *t;
 	for (t = Match.TOWNS->NEXT; t != NULL; t = t->NEXT)
 		if (t->Color != Match.PlayerColor)
@@ -133,6 +153,11 @@ int CheckPlayerDefeat()
 	/*
 	**	"JÁTÉKOS VESZTETT-E" FGV., 1-ET AD VISSZA, HA IGEN, MINDEN MÁS ESETBEN 0-T
 	*/
+
+	if (NOCOLOR == Match.PlayerColor)
+	{
+		return 0;
+	}
 
 	Town *t;
 	for (t = Match.TOWNS->NEXT; t != NULL; t = t->NEXT)

@@ -8,8 +8,16 @@ typedef enum
 {
 	PLAYER_NAME_LENGTH = 21, // maximális hossz
 	VIEWPORT_MOVE_VALUE = 20, // térkép ugrásának mértéke renderelésenként
-	TOWN_TILE_SIZE = 128, // falut jelképező kép mérete
-	IMAGINARY_GRID_SIZE = 32, // négyzetrács mérete, erre vannak rárakva a faluk
+	TOWN_TILE_SIZE = 64, // falut jelképező kép mérete
+	UNIT_CENTER_X = 10, // egységek jelképező kép közepének x coordinátája
+	UNIT_CENTER_Y = 15, // egységek jelképező kép közepének y coordinátája
+	IMAGINARY_GRID_SIZE = 16, // négyzetrács mérete, erre vannak rárakva a faluk
+	TOWN_OFFSET_RESOURCE_X = -12, // falu bal felső sarkától merre legyen az erőforrás szám megjelenítve
+	TOWN_OFFSET_RESOURCE_Y = 24,
+	TOWN_OFFSET_PEASANT_X = 13, // falu bal felső sarkától merre legyen a paraszt létszám megjelenítve
+	TOWN_OFFSET_PEASANT_Y = 17,
+	TOWN_OFFSET_WARRIOR_X = -20, // falu bal felső sarkától merre legyen az katona létszám megjelenítve
+	TOWN_OFFSET_WARRIOR_Y = -22,
 
 	PEASANT_PRODUCTION_PER_MIN = 30, // parasztok termelése
 	PEASANT_COST = 10, // paraszt készítés ára
@@ -52,7 +60,7 @@ typedef struct
 typedef enum
 {	// alapvető játszható színek tárolásához
 
-	RED, YELLOW, GREEN, BLUE, PURPLE, PINK, BLACK, WHITE
+	RED, YELLOW, GREEN, BLUE, PURPLE, PINK, BLACK, WHITE, NOCOLOR
 } Color;
 
 typedef struct
@@ -68,6 +76,7 @@ typedef struct
 {
 	STATE_FUNC INIT;
 	STATE_FUNC LOOP;
+	STATE_FUNC RESIZE;
 	STATE_FUNC UNINIT;
 } PROGRAM_STATE; // egyes állapotok struktúrái
 
@@ -86,6 +95,7 @@ typedef struct
 typedef enum
 {	// főmenü állapotai - melyik menüpont az aktív
 
+	STATE_MAIN_MENU_PLAYER_NAME,
 	STATE_MAIN_MENU_PLAYER_COLOR,
 	STATE_MAIN_MENU_NUMBER_OF_ENEMIES,
 	STATE_MAIN_MENU_DIFFICULTY,
@@ -120,7 +130,8 @@ typedef struct
 
 	MainMenuState State; // melyik menüpont az aktív
 
-	char PlayerName[PLAYER_NAME_LENGTH]; // mi a begépelt játékosnév
+	char PlayerName[PLAYER_NAME_LENGTH + 1]; // mi a begépelt játékosnév
+	int PlayerTypedAName;
 
 	Color PlayerColor; // játékos választott színe
 	int NumberOfEnemies; // választott ellenségek száma
@@ -135,7 +146,14 @@ typedef struct
 {
 	// képek betöltésére és elérésére
 
-	SDL_Surface *Town[8], *Unit[8], *MAIN_MENU_BG, *SELECTED_TOWN_BORDER, *SELECTED_ENEMY_TOWN_BORDER, *GRASS, *HAND;
+	SDL_Surface *Town[8];
+	SDL_Surface *Unit[8];
+	SDL_Surface *MAIN_MENU_BG;
+	SDL_Surface *SELECTED_TOWN_BORDER;
+	SDL_Surface *SELECTED_ENEMY_TOWN_BORDER;
+	SDL_Surface *ENEMY_TOWN_TO_SELECT_AFTER_CAPTURE_BORDER;
+	SDL_Surface *GRASS;
+	SDL_Surface *HAND;
 } Images;
 
 
@@ -170,7 +188,7 @@ typedef struct
 
 	int STARTED;
 
-	Coord Viewport, VIEWPORT_MAX, VIEWPORT_MIN; // nézőpont tárolása és a két szélsőértéké (ezek közé szorítom pe mindig a nézőpontot)
+	Coord Viewport, VIEWPORT_MAX, VIEWPORT_MIN, Center; // nézőpont tárolása és a két szélsőértéké (ezek közé szorítom pe mindig a nézőpontot)
 	int NumberOfEnemies, // ellenségek száma
 	    Difficulty, // nehézség
 	    MINIMUM_DISTANCE, // minimális távolság a falvak között
@@ -184,7 +202,7 @@ typedef struct
 
 	Color PlayerColor; // játékos színe
 	char PlayerName[PLAYER_NAME_LENGTH + 1]; // játékos neve
-	Town *SelectedTown, *SelectedEnemyTown; // kiválasztott saját és ellenséges falu
+	Town *SelectedTown, *SelectedEnemyTown, *EnemyTownToSelectAfterCapture; // kiválasztott saját és ellenséges falu
 } MatchProperties;
 
 

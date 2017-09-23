@@ -118,6 +118,12 @@ void STATE_VICTORY_LOOP()
 	}
 }
 
+void STATE_VICTORY_RESIZE()
+{
+	// Átméretezéskor újra kell inicializálni a victory állapotot.
+	STATE_VICTORY_INIT();
+}
+
 void STATE_VICTORY_UNINIT()
 {
 	// nincs mit feltakarítani

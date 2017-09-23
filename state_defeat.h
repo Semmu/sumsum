@@ -5,6 +5,8 @@ void STATE_DEFEAT_INIT();
 
 void STATE_DEFEAT_LOOP();
 
+void STATE_DEFEAT_RESIZE();
+
 void STATE_DEFEAT_UNINIT();
 
 #endif
